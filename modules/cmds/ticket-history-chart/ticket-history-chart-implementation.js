@@ -3,20 +3,6 @@ const img  = require( '../../jira-img.js' )
 const fs = require( 'fs' )
 const layout = require( './layout.default.json')
 
-function addCommandOptions( args ) {
-    return args.command( 
-        ['key-report', 'rpt-key'], 
-        'Produce a timeline report for a specific Jira key (or multiple reports for multiple keys)',
-        function(argv) {
-            generateReport( args );
-        }
-    )
-    .option( 'key', {
-        describe : 'The Jira key(s) on which to report',
-        requiresArg : true,
-        array : true
-      });
-}
 
 function generateReport( args ) {
     args.user.forEach( u => generateUserReport( u, args ));
@@ -46,14 +32,6 @@ async function generateUserReport( user, args ) {
     img.generateDateStamps( canvas, layout, timeRange );
     img.generateStatusBlocks( canvas, layout, timeRange, statusData );
 
-    // layout.header.labels.forEach( label => {
-    //     img.drawBox( canvas, { 
-    //         left : label.x, 
-    //         top : 0,
-    //         width : label.width,
-    //         height : label.y } );
-    // });
-    // TODO - use the directorytempla as a prefix
     console.log( "Generating report  reports/" + key + '.svg');
     fs.writeFileSync( "reports/" + key + '.svg', canvas.toBuffer() );
   }
