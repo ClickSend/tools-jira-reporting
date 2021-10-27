@@ -3,19 +3,17 @@ A reporting tool for extracting information out of Jira.
 
 Setup
 Download repo
-npm installnpm audit fix
+npm install
 
 node index.js --help
 
-
-node index.js user-ticket-history-table  \
---host clicksend.atlassian.net \
---basic <basic auth hash>== \
---dir ./ \
+--host <your company name>.atlassian.net \
+--username <your username> \
+--password <your password> \
+--dir ./reports \
 --startDate 2021-01-01 \
-reports --user michael 
+--user raul
 
---basic is the Base64 encoded username:password
 Where 
 username is your login email address and
 password is the token you generated in Jira to use here 
