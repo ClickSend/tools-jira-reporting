@@ -192,7 +192,6 @@ function getJason( path, args, headers ) {
       'path': path,
       'headers': {
         'Authorization': 'Basic ' + args.basic,
-        'Cookie': 'atlassian.xsrf.token=' + args.token,
         'Accept': 'application/json'
       },
       'maxRedirects': 20

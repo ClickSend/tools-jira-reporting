@@ -37,12 +37,5 @@ require('yargs/yargs')(hideBin(process.argv))
       normalize : true,
       default : './'
     })
-  .option( 'token', {
-    alias : 't',
-    describe : 'The Atlassian XSRF token',
-    requiredArg : true,
-    demandOption : true,
-    group : 'Jira Connect Options:'
-  })
   .help()
   .parse()
