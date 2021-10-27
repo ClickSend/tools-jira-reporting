@@ -4,9 +4,10 @@ const { hideBin } = require('yargs/helpers')
 
 require('yargs/yargs')(hideBin(process.argv))
   .scriptName("csj")
-  .commandDir('cmds', { recurse : true })
+  .commandDir('modules/cmds', { recurse : true })
   .usage( 
-    chalk.bold(chalk.yellow('ClickSend Jira Reporting Tool.') )
+      '\n'
+    + chalk.bold(chalk.yellow('ClickSend Jira Reporting Tool.') )
     + '\n'
     + '\n'
     + chalk.bold( 'Usage: $0 <command> [options]' 
@@ -14,10 +15,10 @@ require('yargs/yargs')(hideBin(process.argv))
   .demandCommand()
   .option( 'host', {
     alias : 'h',
-    describe : 'Your Atlassian host (e.g. clicksend.atlassian.net)',
+    describe : 'Your Atlassian host (e.g. awesome_company.atlassian.net)',
     requiresArg : true,
     demandOption : true,
-    group : 'Jira Connect Options:'
+    group : 'Jira Connection Options:'
   })
   .option( 'username', {
     alias : 'usr',
@@ -38,7 +39,8 @@ require('yargs/yargs')(hideBin(process.argv))
       describe : 'The directory into which the report(s) is/are written',
       requiresArg : true,
       normalize : true,
-      default : './'
+      default : './',
+      group : 'Report Options:'
     })
   .help()
   .parse()

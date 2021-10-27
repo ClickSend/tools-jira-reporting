@@ -1,28 +1,32 @@
-'use strict';
-
-const jira = require('../../modules/jira.js')
+const jira = require('../../jira.js')
 const fs = require('fs')
 const lux = require('luxon');
 const { DateTime } = require('luxon');
 const Array2D = require("array-2d-js");
 const { UV_FS_O_FILEMAP } = require('constants');
+const { monitorEventLoopDelay } = require('perf_hooks');
 
-/**
- * Generate a single report - this isn't called externally, but we export it
- * anyway, just in case someone else wants to use it.
- * @param {*} key 
- * @param {*} args 
- */
-async function generateReport(args) {
-
+async function generateUserTicketHistoryReport( args ) {
     validateArgs(args);
-    var u = await jira.getMatchingUsers(args.user, args);
+
+    if( Array.isArray( args.user )) {
+        for( var i = 0; i < args.user.length; i++ ) {
+            await generateUserReport( args.user[i], args );
+        }
+    }
+    else {
+        generateUserReport( args.user, args );
+    }
+
+}
+async function generateUserReport( user, args ) {
+    var u = await jira.getMatchingUsers(user, args);
 
     if (u === undefined || u.length === 0) {
-        throw "User name " + args.user + " did not return any valid users.";
+        throw "User name " + user + " did not return any valid users.";
     }
     if (u.length > 1) {
-        var err = "User name " + args.user + " matched multiple users.  Please be more specific. (";
+        var err = "User name " + user + " matched multiple users.  Please be more specific. (";
         u.forEach( usr => {
             err += "'" + usr.displayName + "', ";
         })
@@ -32,7 +36,6 @@ async function generateReport(args) {
 
         throw err;
     }
-
 
     args.fullUser = u[0];
     var userID = args.fullUser.accountId;
@@ -356,64 +359,4 @@ function extractDateTimes(jiraResult, args) {
     return result;
 }
 
-/**
- ** Exports for the command line processor
- **/
-
-exports.command = 'user-ticket-history-table';
-exports.desc = "Report that generates a list of tickets to which a user was assigned over a time period.";
-exports.handler = generateReport;
-exports.builder = function (yargs) {
-    return yargs
-        .option('user',
-            {
-                demandOption: true,
-                describe: 'The user name(s) on which to report.  If multiple users are specified, multiple reports will be generated',
-                type: 'array',
-                group: 'user-history options'
-            }
-        )
-        .option('startDate',
-            {
-                demandOption: false,
-                description: 'The first date (inclusive) for which to generate the report in ISO format (YYYY-MM-DD).  Defaults to 30 days ago.',
-                type: 'string',
-                group: 'user-history options'
-            }
-        )
-        .option('endDate',
-            {
-                demandOption: false,
-                description: 'The last date (inclusive) for which to generate the report in ISO format (YYYY-MM-DD).  Defaults to today.',
-                type: 'string',
-                group: 'user-history options'
-            }
-        )
-        .option('granulatiry',
-            {
-                demandOption: false,
-                description: 'Report time block size in minutes.  Smaller numbers make bigger reports.',
-                type: 'number',
-                default: 60,
-                group: 'user-history options'
-            }
-        )
-        .option('skipWeekends',
-            {
-                demandOption: false,
-                description: 'When present, the report won\'t contain data for Saturdays or Sundays.',
-                type: 'boolean',
-                default: true,
-                group: 'user-history options'
-            }
-        )
-        .option('workingHours',
-            {
-                demandOption: false,
-                description: 'When present, the report will only report from 9:00am to 5:00pm',
-                type: 'boolean',
-                default: true,
-                group: 'user-history options'
-            }
-        )
-}
+module.exports = { generateUserTicketHistoryReport };

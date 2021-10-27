@@ -1,5 +1,5 @@
-const jira = require( '../../modules/jira.js' )
-const img  = require( '../../modules/jira-img.js' )
+const jira = require( '../../jira.js' )
+const img  = require( '../../jira-img.js' )
 const fs = require( 'fs' )
 const layout = require( './layout.default.json')
 
