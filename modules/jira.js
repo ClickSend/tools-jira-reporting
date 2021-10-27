@@ -11,7 +11,7 @@ var lux = require('luxon');
  * @returns 
  */
 function getHistory( key, args ) {
-  return getJason( '/rest/api/3/issue/' + key + '?expand=changelog'. args );
+  return getJson( '/rest/api/3/issue/' + key + '?expand=changelog'. args );
 }
 
 /**
@@ -176,15 +176,21 @@ function getStatusData( ticket ) {
   return statusData;
 }
 
-function executeQuery( jql, args, headers ) {
+function setBasic( args ) {
+  var mix =  args.username + ":" + args.password;
+  args.basic = Buffer.from( mix ).toString( 'base64' );
+  return args.basic;
+}
+
+function executeQuery( jql, args, headers ) {  
   jql = encodeURIComponent( jql );
 
-  return getJason( '/rest/api/3/search?expand=changelog&maxResults=1000&jql=' + jql, args, headers );
+  return getJson( '/rest/api/3/search?expand=changelog&maxResults=1000&jql=' + jql, args, headers );
 }
 
 
-function getJason( path, args, headers ) {
-
+function getJson( path, args, headers ) {
+  setBasic( args );
   var P = new Promise( (resolve, reject) => {
     var options = {
       'method': 'GET',
@@ -228,7 +234,7 @@ function getJason( path, args, headers ) {
 function getMatchingUsers( query, args ) {
   query = encodeURIComponent( query );
 
-  return getJason( '/rest/api/3/user/search?query=' + query, args );
+  return getJson( '/rest/api/3/user/search?query=' + query, args );
 }
 
 module.exports = {

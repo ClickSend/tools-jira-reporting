@@ -105,3 +105,6 @@ dist
 
 #Ignore the reports output directory
 reports/
+
+#Ignore our VS Code config (contains secrets)
+.vscode/
