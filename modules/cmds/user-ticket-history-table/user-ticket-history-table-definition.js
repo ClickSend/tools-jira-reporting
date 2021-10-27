@@ -1,4 +1,4 @@
-const report = require('./report-implementation.js')
+const report = require('./report-user-history-implementation.js')
 
 /**
  * Generate a single report - this isn't called externally, but we export it

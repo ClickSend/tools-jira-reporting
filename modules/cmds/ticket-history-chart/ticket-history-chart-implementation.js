@@ -57,7 +57,3 @@ async function generateUserReport( user, args ) {
     console.log( "Generating report  reports/" + key + '.svg');
     fs.writeFileSync( "reports/" + key + '.svg', canvas.toBuffer() );
   }
-
-  exports.command = 'report-key';
-  exports.desc = "Generate a timeline report for a given key or keys"
-  exports.handler = generateReport;
