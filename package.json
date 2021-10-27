@@ -1,0 +1,35 @@
+{
+  "name": "tools-jira",
+  "version": "1.0.0",
+  "description": "ClickSend tools for working with Jira from the command line",
+  "main": "index.js",
+  "bin" : {
+    "csjira":"index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ClickSend/tools-jira.git"
+  },
+  "keywords": [
+    "Jira"
+  ],
+  "author": "Michael Riecken",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ClickSend/tools-jira/issues"
+  },
+  "homepage": "https://github.com/ClickSend/tools-jira#readme",
+  "dependencies": {
+    "array-2d-js": "^1.0.1",
+    "canvas": "^2.8.0",
+    "chalk": "^4.1.2",
+    "commander": "^8.1.0",
+    "figlet": "^1.5.2",
+    "follow-redirects": "^1.14.1",
+    "luxon": "^2.0.2",
+    "yargs": "^17.0.1"
+  }
+}
