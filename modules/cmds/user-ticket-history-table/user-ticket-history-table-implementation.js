@@ -6,20 +6,20 @@ const Array2D = require("array-2d-js");
 const { UV_FS_O_FILEMAP } = require('constants');
 const { monitorEventLoopDelay } = require('perf_hooks');
 
-async function generateUserTicketHistoryReport( args ) {
+async function generateUserTicketHistoryReport(args) {
     validateArgs(args);
 
-    if( Array.isArray( args.user )) {
-        for( var i = 0; i < args.user.length; i++ ) {
-            await generateUserReport( args.user[i], args );
+    if (Array.isArray(args.user)) {
+        for (var i = 0; i < args.user.length; i++) {
+            await generateUserReport(args.user[i], args);
         }
     }
     else {
-        generateUserReport( args.user, args );
+        generateUserReport(args.user, args);
     }
 
 }
-async function generateUserReport( user, args ) {
+async function generateUserReport(user, args) {
     var u = await jira.getMatchingUsers(user, args);
 
     if (u === undefined || u.length === 0) {
@@ -27,10 +27,10 @@ async function generateUserReport( user, args ) {
     }
     if (u.length > 1) {
         var err = "User name " + user + " matched multiple users.  Please be more specific. (";
-        u.forEach( usr => {
+        u.forEach(usr => {
             err += "'" + usr.displayName + "', ";
         })
-        err = err.substr( 0, err.length - 2 );
+        err = err.substr(0, err.length - 2);
 
         err += ")";
 
@@ -41,6 +41,9 @@ async function generateUserReport( user, args ) {
     var userID = args.fullUser.accountId;
 
     var jql = 'assignee was ' + userID + ' and createdDate < "' + args.endDate + '" and ( resolution = unresolved or resolutiondate > "' + args.startDate + '")';
+    if( args.jql != undefined ) {
+        jql += " and " + args.jql;
+    }
     var jiraResult = await jira.executeQuery(jql, args, { maxResults: 1000 });
 
     // Get the extracted date times.
@@ -97,7 +100,7 @@ async function generateUserReport( user, args ) {
         data.fillPosition(x, y, result);
     })
 
-    // Collappse everything
+    // Collapse everything
     for (var x = 1; x < data.width; x++) {
         for (var y = 1; y < data.height; y++) {
             data.fillPosition(x, y, collapseSEs(data.getPosition(x, y)));
@@ -122,6 +125,7 @@ function removeEmptyTickets(data) {
             if (data.getPosition(x, y) === 'Y') {
                 // They worked on it - skip to the next ticket
                 count++;
+                break;
             }
         }
         if (count === 0) {
@@ -170,10 +174,10 @@ function dumpData(data, fileName, args) {
         if (when < startDate || when > endDate) {
             continue;
         }
-        if (args.skipWeekends && when.weekday > 5) {
+        if (!args.includeWeekends && when.weekday > 5) {
             continue;
         }
-        if (args.workingHours && (when.hour < 9 || when.hour > 17)) {
+        if (!args.allDay && (when.hour < 9 || when.hour > 17)) {
             continue;
         }
 
@@ -205,19 +209,33 @@ function dumpData(data, fileName, args) {
 }
 
 function fillYN(data) {
-    var value = 'N';
 
     for (var x = 1; x < data.width; x++) {
+        var value = 'N';
         for (var y = 1; y < data.height; y++) {
             var v2 = data.getPosition(x, y);
-            if (v2 === 'S' || v2 === 'Y') {
+
+            // If it's a blip, then we have a "Y", but we don't change VALUE
+            if (v2 === 'B') {
+                data.fillPosition(x, y, 'Y');
+            }
+            // No matter what we have, if we have a S(tart) or Y, then we 
+            // write a Y and continue with it.
+            else if (v2 === 'S' || v2 === 'Y') {
+                data.fillPosition(x, y, 'Y');
                 value = 'Y'
             }
+            // No matter what we have, if we have a S(tart) or Y, then we 
+            // write a Y and continue with it.
             else if (v2 === 'E') {
+                data.fillPosition(x, y, 'N');
                 value = 'N';
             }
+            // Otherwise, just continue filling with the same thing
+            else {
+                data.fillPosition(x, y, value);
+            }
 
-            data.fillPosition(x, y, value);
         }
     }
 
@@ -261,7 +279,7 @@ function collapseSEs(value) {
 
     // SE or ES is the same as nothing
     if (value.length % 2 == 0) {
-        return undefined;
+        return 'B'; // We had a blip!
     }
 
     // Odd numbers - so whatever there is the most of, that wins.

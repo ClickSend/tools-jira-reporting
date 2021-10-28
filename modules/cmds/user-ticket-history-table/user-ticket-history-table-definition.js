@@ -22,6 +22,7 @@ exports.builder = function (yargs) {
     return yargs
         .option('user',
             {
+                alias : 'users',
                 demandOption: true,
                 describe: 'The user name(s) on which to report.  If multiple users are specified, multiple reports will be generated',
                 type: 'array',
@@ -53,21 +54,29 @@ exports.builder = function (yargs) {
                 group: 'user-history options'
             }
         )
-        .option('skipWeekends',
+        .option('includeWeekends',
             {
                 demandOption: false,
-                description: 'When present, the report won\'t contain data for Saturdays or Sundays.',
+                description: 'Include Saturdays and Sundays in the report',
+                type: 'boolean',
+                default: false,
+                group: 'user-history options'
+            }
+        )
+        .option('allDay',
+            {
+                demandOption: false,
+                description: 'By default, this report only produces data for 09:00-17:00.  When set, this report will produce data for all 24 hours of the day.',
                 type: 'boolean',
                 default: true,
                 group: 'user-history options'
             }
         )
-        .option('workingHours',
+        .option('jql',
             {
                 demandOption: false,
-                description: 'When present, the report will only report from 9:00am to 5:00pm',
-                type: 'boolean',
-                default: true,
+                description: 'query parameters to that will be appended to the end of the generated query with an "and" conjunction.',
+                type: 'string',
                 group: 'user-history options'
             }
         )
