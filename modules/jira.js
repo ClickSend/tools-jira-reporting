@@ -7,7 +7,7 @@ const lux = require('luxon');
 var fields = undefined;
 
 /**
- * Get the raw JSON for a ticket history.
+ * Get the raw JSON for a issue history.
  * @param {*} key 
  * @param {*} args 
  * @returns 
@@ -18,13 +18,13 @@ function getHistory(key, args) {
 
 
 
-function getTimeFrameForTicket(statusData) {
+function getTimeFrameForIssue(statusData) {
   var timeFrame = {};
 
   timeFrame.min = statusData[0].start;
   timeFrame.max = statusData[0].end;
 
-  // if( ticket.fields.resolution === null ) {
+  // if( issue.fields.resolution === null ) {
   //   timeFrame.max = lux.DateTime.now();
   // }
 
@@ -51,15 +51,15 @@ function getTimeFrameForTicket(statusData) {
 
 /**
  * This is where we pull out all of the interesting status data for 
- * the ticket.
+ * the issue.
  * 
  * All date time information is in Lux.
  * 
  * We get the assignee, but we aren't doing anything with it at the moment.
- * @param {*} ticket 
+ * @param {*} issue 
  * @returns Set of StatusData
  */
-function getStatusData(ticket) {
+function getStatusData(issue) {
   /**  
    * { start    : <date time>
    *   end      : <date time> - can be null
@@ -69,10 +69,10 @@ function getStatusData(ticket) {
    */
   var statusData = new Array();
 
-  var histories = ticket.changelog.histories;
+  var histories = issue.changelog.histories;
 
   statusData.push({
-    start: lux.DateTime.fromISO(ticket.fields.created),
+    start: lux.DateTime.fromISO(issue.fields.created),
     end: undefined,
     status: 'New',
     assignee: 'unassigned'
@@ -130,9 +130,9 @@ function getStatusData(ticket) {
   }
 
   // Here's a weird case.
-  // If we are at the last element and there is no end time defined and the ticket is unresolved
+  // If we are at the last element and there is no end time defined and the issue is unresolved
   // then it's "still open" and the end date is right this second (because it hasn't yet ended)
-  if (statusData[statusData.length - 1].end === undefined && ticket.fields.resolution === null) {
+  if (statusData[statusData.length - 1].end === undefined && issue.fields.resolution === null) {
     statusData[statusData.length - 1].end = lux.DateTime.now();
   }
 
@@ -211,12 +211,12 @@ async function getFieldId( name, args ) {
   };
 }
 
-async function getTicketFieldValue( ticket, field, args ) {
+async function getIssueFieldValue( issue, field, args ) {
   var fieldId = await getFieldId( field, args );
-  if( !ticket.fields) {
-    throw "Unrecognized ticket object.  Contains no fields.";
+  if( !issue.fields) {
+    throw "Unrecognized issue object.  Contains no fields.";
   }
-  return ticket.fields[fieldId];
+  return issue.fields[fieldId];
 }
 
 async function getUserFromUserName( user, args ) {
@@ -247,6 +247,11 @@ async function getMatchingUsers(query, args) {
   return await getJson('/rest/api/3/user/search?query=' + query, args);
 }
 
+async function getWorkLog( issue, args ) {
+  var path = '/rest/api/3/issue/' + issue + '/worklog';
+  return await getJson( path, args );
+}
+
 module.exports = {
   executeQuery,
   getFieldId,
@@ -254,7 +259,8 @@ module.exports = {
   getHistory,
   getMatchingUsers,
   getStatusData,
-  getTicketFieldValue,
-  getTimeFrameForTicket,
-  getUserFromUserName
+  getIssueFieldValue,
+  getTimeFrameForIssue,
+  getUserFromUserName,
+  getWorkLog
 };
