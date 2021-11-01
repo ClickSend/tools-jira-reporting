@@ -44,13 +44,61 @@ function initCanvas( layout ) {
     return canvas;
 }
 
-function drawBox( canvas, box ) {
+/**
+ * 
+ * @param {*} canvas 
+ * @param {*} text 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} spacing 
+ * @param {*} alignment 
+ * @param {*} rotation 
+ */
+function renderTextList( canvas, text, x, y, spacing, alignment, rotation ) {
     const ctx = canvas.getContext('2d')
+
+}
+
+function getWidestText( canvas, text, options ) {
+    const ctx = canvas.getContext('2d');
     ctx.save();
-    ctx.strokeStyle = 'red';
-    ctx.strokeRect(box.left, box.top, box.width, box.height)
+
+    if(options.font != undefined ) {
+        ctx.font = options.font;
+    }
+
+    var width = 0;
+
+    if( Array.isArray(text)) {
+        text.forEach( t => {
+            var w = ctx.measureText( t ).width;
+            if( w > width ) {
+                width = w;
+            }
+        });
+    }
     ctx.restore();
 
+    return width;
+}
+
+function getTallestText( canvas, text, options ) {
+    const ctx = canvas.getContext('2d')
+    if(options.font != undefined ) {
+        ctx.font = options.font;
+    }
+    var width = 0;
+    if( Array.isArray(text)) {
+        text.forEach( t => {
+            var w = ctx.measureText( t ).width;
+            if( w > width ) {
+                width = w;
+            }
+        });
+    }
+    ctx.restore();
+
+    return width;
 }
 
 function generateStatusHeaders( canvas, layout, headers ) {
@@ -120,15 +168,15 @@ function generateDateStamps( canvas, layout, timeRange ) {
     // Get the text size
     const ctx = canvas.getContext('2d')
     ctx.font = FONT;
-    var textSize = getTextDimensions( ctx, "2020-01-01" );
+    var textSize = getCalculatedTextMetrics( ctx, "2020-01-01" );
 
     var time = startOfFirstDay;
-    var y = layout.dates.top + textSize.height;
+    var y = layout.dates.top + textSize.totalHeight;
     var majorCount = interval.length() / scale.major;
     var startY = y;
     var endY = y;
     
-    var spacing = (layout.dates.height - textSize.height) / (majorCount - 1);
+    var spacing = (layout.dates.height - textSize.totalHeight) / (majorCount - 1);
 
     while( time <= endOfLastDay ) {
        
@@ -155,13 +203,23 @@ function generateDateStamps( canvas, layout, timeRange ) {
 
     ctx.restore();
 }
+function getCalculatedTextMetrics( ctx, text, options ) {
+    ctx.save();
+    var result = {};
 
-function getTextDimensions( ctx, text ) {
-    var metrics = ctx.measureText( text );
-    return {
-         height : metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent,
-         width : metrics.width
-    };
+    if( options.font) {
+        ctx.font = options.font;
+    }
+
+    var textMetrics = ctx.measureText( text );
+
+    textMetrics.middle = (( textMetrics.alphabeticBaseline + textMetrics.emHeighAscent ) + ( textMetrics.alphabeticBaseline - emHeightDescent )) / 2;
+    textMetrics.verticalOffsetToMiddle = textMetrics.alphabeticBaseline - textMetrics.middle;
+    textMetrics.totalHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+
+    ctx.restore();
+
+    return textMetrics;
 }
 
 function generateTitle( canvas, name, endStatus ) {
@@ -262,4 +320,4 @@ function getScale( interval ) {
 }
 
 
-module.exports = { initCanvas, generateStatusHeaders, generateDateStamps, generateStatusBlocks, drawBox, generateTitle }
+module.exports = { initCanvas, generateStatusHeaders, generateDateStamps, generateStatusBlocks, generateTitle, getTallestText }

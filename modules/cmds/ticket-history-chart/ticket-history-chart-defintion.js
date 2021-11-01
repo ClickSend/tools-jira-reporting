@@ -1,10 +1,10 @@
-
+const report = require('./ticket-history-chart-implementation.js');
 /**
  * We have to pass this off to an import so that we can use the async functions
  * Yargs doesn't want to play nice with the type of module import that makes this possible.
  */
-function generateReport(args) {
-    require('ticket-history-chart-implementation.js').generateReport(args);
+async function generateReport(args) {
+    await report.generateReport(args);
 }
 
 exports.command = 'ticket-history-chart';
@@ -14,6 +14,7 @@ exports.builder = function (yargs) {
     return yargs
         .option('key',
             {
+                alias : 'keys k',
                 demandOption: true,
                 describe: 'The Jira ticket key(s) on which to report',
                 type: 'array',

@@ -68,7 +68,7 @@ exports.builder = function (yargs) {
                 demandOption: false,
                 description: 'By default, this report only produces data for 09:00-17:00.  When set, this report will produce data for all 24 hours of the day.',
                 type: 'boolean',
-                default: true,
+                default: false,
                 group: 'user-history options'
             }
         )

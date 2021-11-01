@@ -40,7 +40,13 @@ async function generateUserReport(user, args) {
     args.fullUser = u[0];
     var userID = args.fullUser.accountId;
 
-    var jql = 'assignee was ' + userID + ' and createdDate < "' + args.endDate + '" and ( resolution = unresolved or resolutiondate > "' + args.startDate + '")';
+    var jql = 
+      '(assignee changed to ' + userID + ' before ' + args.startDate + ' and assignee changed from ' + userID + ' after 2021-10-14) ' 
+    + ' OR '
+    + '(assignee changed from ' + userID + ' during(' + args.startDate + ',' + args.endDate + '))' 
+    + ' OR '
+    + '(assignee changed to ' + userID + ' during(' + args.startDate + ',' + args.endDate + '))';
+
     if( args.jql != undefined ) {
         jql += " and " + args.jql;
     }
