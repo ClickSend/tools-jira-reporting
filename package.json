@@ -26,6 +26,7 @@
     "array-2d-js": "^1.0.1",
     "canvas": "^2.8.0",
     "chalk": "^4.1.2",
+    "cli-progress": "^3.9.1",
     "commander": "^8.1.0",
     "figlet": "^1.5.2",
     "follow-redirects": "^1.14.1",

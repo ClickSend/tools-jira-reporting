@@ -7,7 +7,7 @@ const report = require('./user-hours-per-point-implementation.js')
  * @param {*} args 
  */
 async function generateReport(args) {
-    await report.generateReport( args );
+    await report.generateReport(args);
 }
 
 
@@ -17,12 +17,12 @@ async function generateReport(args) {
 
 exports.command = 'user-hours-per-point';
 exports.desc = "Determine how many hours it takes to complete one story point of work";
-exports.handler = async function( y ) { await generateReport(y) };
+exports.handler = async function (y) { await generateReport(y) };
 exports.builder = function (yargs) {
     return yargs
         .option('user',
             {
-                alias : 'users',
+                alias: 'users',
                 demandOption: true,
                 describe: 'The user name(s) on which to report.  If multiple users are specified, multiple reports will be generated',
                 type: 'array',
@@ -41,6 +41,23 @@ exports.builder = function (yargs) {
             {
                 demandOption: false,
                 description: 'The last date (inclusive) for which to generate the report in ISO format (YYYY-MM-DD).  Defaults to today.',
+                type: 'string',
+                group: 'user-history options'
+            }
+        )
+        .option('jql',
+            {
+                demandOption: false,
+                description: 'Additional JQL commands that will be added to the querty after appending an "and"',
+                type: 'string',
+                group: 'user-history options'
+            }
+        )
+        .option('dir',
+            {
+                demandOption: false,
+                description: 'The directory into which to put the report',
+                default: './reports',
                 type: 'string',
                 group: 'user-history options'
             }

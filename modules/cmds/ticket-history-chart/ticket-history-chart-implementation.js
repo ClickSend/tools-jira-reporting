@@ -5,7 +5,7 @@ const layout = require('./layout.default.json')
 
 
 async function generateReport(args) {
-    //    validateArgs(args);
+    validateArgs(args);
 
     if (Array.isArray(args.keys)) {
         for (var i = 0; i < args.keys.length; i++) {
