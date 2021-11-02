@@ -1,6 +1,7 @@
-#!/usr/bin / env node
+#!/usr/bin/env node
 const chalk = require ('chalk');
 const { hideBin } = require('yargs/helpers')
+
 
 require('yargs/yargs')(hideBin(process.argv))
   .scriptName("csj")

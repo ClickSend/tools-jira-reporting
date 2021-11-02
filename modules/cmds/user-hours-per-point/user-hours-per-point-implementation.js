@@ -70,7 +70,7 @@ async function generateUserReport( userName, args ) {
 
     var line =  "Key,Points,Total Time,User Time";
 
-    const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+    const bar1 = new cliProgress.SingleBar({format : 'Getting work logs : ' + cliProgress.Presets.shades_classic.format}, cliProgress.Presets.shades_classic);
     bar1.start(json.issues.length, 0);
 
     for( var i = 0; i < json.issues.length; i++ ) {

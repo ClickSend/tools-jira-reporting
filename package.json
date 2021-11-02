@@ -4,7 +4,7 @@
   "description": "ClickSend tools for working with Jira from the command line",
   "main": "index.js",
   "bin": {
-    "csjira": "index.js"
+    "csj": "index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
