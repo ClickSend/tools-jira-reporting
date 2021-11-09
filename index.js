@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 const chalk = require('chalk');
-const { option } = require('yargs');
 const { hideBin } = require('yargs/helpers')
 
 
