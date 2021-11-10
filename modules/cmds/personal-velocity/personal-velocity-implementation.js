@@ -83,6 +83,10 @@ async function generateUserReport(userName, args) {
         console.log( '\nRunning query....');
     }
 
+    if( args.force-jql ) {
+        JQL = args.force-jql;
+    }
+    
     var json = await jira.executeQuery(JQL, args);
 
     if( args.debug ) {

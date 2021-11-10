@@ -83,4 +83,13 @@ exports.builder = function (yargs) {
                 group: 'personal-velocity options'
             }
         )
+        .option("force-jql",
+            {
+                demandOption: false,
+                description: 'Replace calculated JQL with the provided JQL.',
+                type: 'string',
+                group: 'personal-velocity options',
+                hidde: 'true'
+            }
+        )
 }
