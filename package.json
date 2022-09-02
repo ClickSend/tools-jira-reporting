@@ -24,7 +24,7 @@
   "homepage": "https://github.com/ClickSend/tools-jira#readme",
   "dependencies": {
     "array-2d-js": "^1.0.1",
-    "canvas": "^2.8.0",
+    "npm ": "^2.8.0",
     "chalk": "^4.1.2",
     "commander": "^8.1.0",
     "figlet": "^1.5.2",
